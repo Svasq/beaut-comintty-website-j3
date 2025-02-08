@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server"
-import { createHash } from "crypto"
 import { SignJWT } from "jose"
 import { sql } from "@vercel/postgres"
 
@@ -8,9 +7,10 @@ export const runtime = "edge"
 const secretKey = new TextEncoder().encode(process.env.JWT_SECRET!)
 
 async function hashPassword(password: string): Promise<string> {
-  const hash = createHash("sha256")
-  hash.update(password)
-  return hash.digest("hex")
+  const msgBuffer = new TextEncoder().encode(password)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
 }
 
 export async function POST(request: Request) {
