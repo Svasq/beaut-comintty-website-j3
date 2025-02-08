@@ -3,9 +3,7 @@ import { createHash } from "crypto"
 import { SignJWT } from "jose"
 import { sql } from "@vercel/postgres"
 
-export const config = {
-  runtime: "edge",
-}
+export const runtime = "edge"
 
 const secretKey = new TextEncoder().encode(process.env.JWT_SECRET!)
 
